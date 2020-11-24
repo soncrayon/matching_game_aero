@@ -15,8 +15,8 @@ body {
     margin: 0; 
     padding-right: 15%; 
     padding-left: 15%;
-    padding-top: 2.5%;
-    padding-bottom: 5%;
+    padding-top: 0;
+    padding-bottom: 1%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -60,24 +60,38 @@ header h2 {
 }
 
 #rating {
-    width: 18%;
+    width: 23%;
     justify-content: space-between;
 }
 
 #refresh img {
-    width: 2rem;
-    height: 2rem;
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+#refresh img:hover {
+    cursor: pointer;
 }
 
 #game_board {
     width: 80%;
-    height: 85%;
+    height: 90%;
     padding: 2%;
-    display: flex;
-    flex-direction: row;
-    flex-flow: wrap;
+    padding-top: 3%;
+    padding-left: 4%;
+    display: grid;
+    justify-content: space-around;
+    column-gap: 2rem;
+    grid-template-columns: auto auto auto auto;
+    grid-template-rows: auto auto auto auto;
     background-color: lightblue;
     border-radius: 5%;
+}
+
+.card_scene {
+    width: 90%;
+    height: 90%;
+    border-style: solid;
 }
 
 
