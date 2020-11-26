@@ -1,6 +1,18 @@
+let intermediateMoves = 0
+let totalMoves = 0
+
+const incrementMoves = () => {
+    intermediateMoves++
+    if (intermediateMoves === 2){
+        intermediateMoves = 0
+        totalMoves++
+        document.getElementById('moves_number').innerHTML = totalMoves
+    }
+}
+
 const createCardBackImage = () => {
     let cardBackImage = document.createElement('img')
-    cardBackImage.src = 'https://img.icons8.com/officel/16/000000/edit.png'
+    cardBackImage.src = 'https://background-tiles.com/overview/black/patterns/large/1035.png'
     cardBackImage.alt = 'card back image'
     return cardBackImage
 }
@@ -26,45 +38,44 @@ const createCardFront = (image) => {
     return cardFront
 }
 
-const toggleCardFlip = (event) => {
-    console.log (event.target.className)
-    // if (event.target.className = "card animate__animated animate__flip") {
-    //     return event.target.className = "card animate__animated animate__flip" 
-    // } 
-    // return event.target.className = "card animate__animated animate__flip"
+const executeCardFlip = (event) => {
+    console.log(event.target.parentNode.parentNode.className)
+    event.target.parentNode.parentNode.className.includes('is_flipped') ? 
+    event.target.parentNode.parentNode.className =  'card' :
+    event.target.parentNode.parentNode.className = 'card is_flipped'
+    incrementMoves();
 }
 
 const createCard = (obj) => {
     let card = document.createElement('div')
-    card.className = "card animate__animated animate__flipInY"
+    card.className = "card"
     card.id = obj.id
-    card.innerHTML = "I need some text here to get the card to open up I think.  This will be replaced by an image later."
-    card.append(createCardFront(obj.image_url))
     card.append(createCardBack())
+    card.append(createCardFront(obj.image_url))
     card.addEventListener('click', (event) => {
-        toggleCardFlip(event)
+        executeCardFlip(event)
     })
     return card
 }
 
 const getCardImageObjects = () => {
     let cardObjects = [
-            {id: 1, image_url: "https://img.icons8.com/officel/16/000000/sun.png"},
-            {id: 2, image_url: "https://img.icons8.com/officel/16/000000/toolbox.png"},
-            {id: 3, image_url: "https://img.icons8.com/officel/16/000000/music.png"},
-            {id: 4, image_url: "https://img.icons8.com/officel/16/000000/binoculars.png"},
-            {id: 5, image_url: "https://img.icons8.com/officel/16/000000/key.png"},
-            {id: 6, image_url: "https://img.icons8.com/officel/16/000000/idea.png"},
-            {id: 7, image_url: "https://img.icons8.com/officel/16/000000/checkmark.png"},
-            {id: 8, image_url: "https://img.icons8.com/officel/16/000000/home.png"}
+            {id: 1, image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Japanese_Hiragana_kyokashotai_NE.svg/240px-Japanese_Hiragana_kyokashotai_NE.svg.png"},
+            {id: 2, image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Japanese_Hiragana_kyokashotai_NU.svg/240px-Japanese_Hiragana_kyokashotai_NU.svg.png"},
+            {id: 3, image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Japanese_Hiragana_kyokashotai_NO.svg/240px-Japanese_Hiragana_kyokashotai_NO.svg.png"},
+            {id: 4, image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Japanese_Hiragana_kyokashotai_HA.svg/240px-Japanese_Hiragana_kyokashotai_HA.svg.png"},
+            {id: 5, image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Japanese_Hiragana_kyokashotai_NA.svg/240px-Japanese_Hiragana_kyokashotai_NA.svg.png"},
+            {id: 6, image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Japanese_Hiragana_kyokashotai_TE.svg/240px-Japanese_Hiragana_kyokashotai_TE.svg.png"},
+            {id: 7, image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Japanese_Hiragana_kyokashotai_TI.svg/240px-Japanese_Hiragana_kyokashotai_TI.svg.png"},
+            {id: 8, image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Japanese_Hiragana_kyokashotai_MA.svg/240px-Japanese_Hiragana_kyokashotai_MA.svg.png"}
     ]
+    // implement the Fisher-Yates algorithm to randomize the cards on each game load 
     for (let i = cardObjects.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * i)
         const temp = cardObjects[i]
         cardObjects[i] = cardObjects[j]
         cardObjects[j] = temp
     }
-    console.log(cardObjects)
     return cardObjects
 }
 
@@ -83,14 +94,6 @@ const createCardScenes = () => {
 }
 
 const loadGame = (cardScenes) => {
-    // use for loop to do the below 16 times 
-    // create a tile ("scene" div) div and assign variable
-    // create a card div and append to tile div
-    // assign appropriate class names to the above
-    // create card back and card front divs and assign variables, add classes (card image and card back/front)
-    // create front and back images, add event listeners, classes, ids, and append where needed
-
-    // pass the return value of createCardScenes to the below createCardScenes()
     cardScenes.forEach((cardScene) => {
         document.getElementById('game_board').append(cardScene)   
     })
@@ -99,6 +102,3 @@ const loadGame = (cardScenes) => {
 window.addEventListener('DOMContentLoaded', (event) => {
     loadGame(createCardScenes());
 })
-
-
-// TODO: take a look at animate.css for game effects including flipping cards 
