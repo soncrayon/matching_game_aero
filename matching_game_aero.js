@@ -1,13 +1,62 @@
 let intermediateMoves = 0
 let totalMoves = 0
+let timerStarted = false
 
-const incrementMoves = () => {
+const checkAndAdjustRating = () => {
+    if (totalMoves === 12 || 
+        totalMoves === 20 || 
+        totalMoves === 28 || 
+        totalMoves === 36) {
+        document.querySelector('.rating_star').remove()
+    }
+}
+
+const incrementTotalMoves = () => {
+    totalMoves++
+    document.getElementById('moves_number').innerHTML = totalMoves
+    checkAndAdjustRating()
+}
+
+const incrementIntermediateMoves = () => {
     intermediateMoves++
     if (intermediateMoves === 2){
         intermediateMoves = 0
-        totalMoves++
-        document.getElementById('moves_number').innerHTML = totalMoves
+        incrementTotalMoves()
     }
+}
+
+const incrementMinutes = () => {
+    document.getElementById('timer_clock_minutes').innerHTML++
+}
+
+const padSeconds = (seconds, length = 2) => {
+    let secondsString = '' + seconds
+    while (secondsString.length < length) {
+        secondsString = '0' + secondsString
+    }
+    return document.getElementById('timer_clock_seconds').innerHTML = secondsString
+}
+
+const incrementSeconds = () => {
+    let seconds = document.getElementById('timer_clock_seconds').innerHTML
+    seconds++
+    padSeconds(seconds)
+}
+
+setInterval(function runTimer (){
+    let seconds = document.getElementById('timer_clock_seconds').innerHTML
+    if(timerStarted === true) {
+        if (seconds === '59') {
+            document.getElementById('timer_clock_seconds').innerHTML = '00'
+            return incrementMinutes()
+        } 
+        return incrementSeconds()
+    }
+}, 1000)
+
+const startTimer = () => {
+    timerStarted = true 
+    incrementIntermediateMoves()
 }
 
 const createCardBackImage = () => {
@@ -39,11 +88,13 @@ const createCardFront = (image) => {
 }
 
 const executeCardFlip = (event) => {
-    console.log(event.target.parentNode.parentNode.className)
     event.target.parentNode.parentNode.className.includes('is_flipped') ? 
     event.target.parentNode.parentNode.className =  'card' :
     event.target.parentNode.parentNode.className = 'card is_flipped'
-    incrementMoves();
+    if (timerStarted === false) {
+        return startTimer()
+    }
+    return incrementIntermediateMoves();
 }
 
 const createCard = (obj) => {

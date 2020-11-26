@@ -59,9 +59,23 @@ header h2 {
     width: 18%;
 }
 
+#timer_clock {
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+}
+
 #rating {
     width: 23%;
-    justify-content: space-between;
+    justify-content: left;
+}
+
+#rating_text {
+    margin-right: 2%;
+}
+
+.rating_star {
+    margin-right: 2%;
 }
 
 #refresh img {
