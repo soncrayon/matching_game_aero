@@ -1,27 +1,98 @@
 let intermediateMoves = 0
 let totalMoves = 0
-let timerStarted = false
+let successfulMoves = 0 
+let timerActive = false
+let flippedCardClass = null 
 
-const checkAndAdjustRating = () => {
+// const exitModalWithoutRefreshingGame = () => {
+
+// }
+
+// const refreshGame = () => {
+//     // need to append an event listener for this function to the refresh icon in the upper right of game board 
+// }
+
+// const showGameWonModal = () => {
+//     // create appropriate dom elements and set styling in css file 
+//     // create buttons for continue/quit actions and apply event handlers 
+//     // conditionals here for whether the player chooses to refresh the game or exit the modal without refreshing either by clicking the "no" button or "x" to close
+//     // pull the "x" from icon8 
+// }
+
+const checkForGameWin = () => {
+    if (successfulMoves === 8) {
+        // won game logic goes here
+        console.log('you won the game')
+        timerActive === false 
+        // showGameWonModal()
+    }
+}
+
+const resetCardsAfterMismatch = () => {
+    setTimeout(function(){
+        document.querySelectorAll('.active').forEach((card) => {
+            card.parentNode.classList.toggle('animate__animated')
+            card.parentNode.classList.toggle('animate__shakeX')
+            card.classList.toggle('active')
+            card.style.transform = 'none'
+        })
+        flippedCardClass = null 
+    }, 1000)
+}
+
+const handleMismatch = () => { 
+    document.querySelectorAll('.active').forEach((card) => {
+        setTimeout(function(){
+            card.parentNode.classList.toggle('animate__animated');
+            card.parentNode.classList.toggle('animate__shakeX');
+        }, 500)
+    })
+    resetCardsAfterMismatch()
+}
+
+const handleMatch = () => { 
+    document.querySelectorAll('.active').forEach((card) => {
+        card.parentNode.classList.toggle('animate__animated')
+        card.parentNode.classList.toggle('animate__rubberBand')
+        card.classList.toggle('active')
+        card.removeEventListener('click', executeCardFlip)
+    })
+    flippedCardClass = null 
+    successfulMoves++ 
+    checkForGameWin()
+}
+
+const checkForCardMatch = (event) => {
+    if (flippedCardClass === event.target.parentNode.parentNode.className) {
+       return handleMatch()
+    }
+    return handleMismatch()
+}
+
+const checkAndAdjustRating = (event) => {
     if (totalMoves === 12 || 
         totalMoves === 20 || 
         totalMoves === 28 || 
         totalMoves === 36) {
         document.querySelector('.rating_star').remove()
     }
+    checkForCardMatch(event)
 }
 
-const incrementTotalMoves = () => {
+const incrementTotalMoves = (event) => {
     totalMoves++
     document.getElementById('moves_number').innerHTML = totalMoves
-    checkAndAdjustRating()
+    checkAndAdjustRating(event)
 }
 
-const incrementIntermediateMoves = () => {
+const handleMove = (event) => {
     intermediateMoves++
+    if (intermediateMoves === 1) {
+        flippedCardClass = event.target.parentNode.parentNode.className
+    }
     if (intermediateMoves === 2){
         intermediateMoves = 0
-        incrementTotalMoves()
+        incrementTotalMoves(event)
     }
 }
 
@@ -45,7 +116,7 @@ const incrementSeconds = () => {
 
 setInterval(function runTimer (){
     let seconds = document.getElementById('timer_clock_seconds').innerHTML
-    if(timerStarted === true) {
+    if(timerActive === true) {
         if (seconds === '59') {
             document.getElementById('timer_clock_seconds').innerHTML = '00'
             return incrementMinutes()
@@ -54,9 +125,9 @@ setInterval(function runTimer (){
     }
 }, 1000)
 
-const startTimer = () => {
-    timerStarted = true 
-    incrementIntermediateMoves()
+const startTimer = (event) => {
+    timerActive = true 
+    handleMove(event)
 }
 
 const createCardBackImage = () => {
@@ -87,25 +158,25 @@ const createCardFront = (image) => {
     return cardFront
 }
 
+const flipCard = (event) => {
+    event.target.parentNode.parentNode.style.transform = "rotateY(180deg)"
+    event.target.parentNode.parentNode.classList.toggle("active")
+}
+
 const executeCardFlip = (event) => {
-    event.target.parentNode.parentNode.className.includes('is_flipped') ? 
-    event.target.parentNode.parentNode.className =  'card' :
-    event.target.parentNode.parentNode.className = 'card is_flipped'
-    if (timerStarted === false) {
-        return startTimer()
+    flipCard(event)
+    if (timerActive === false) {
+        return startTimer(event)
     }
-    return incrementIntermediateMoves();
+    return handleMove(event);
 }
 
 const createCard = (obj) => {
     let card = document.createElement('div')
-    card.className = "card"
-    card.id = obj.id
+    card.className = `card ${obj.id}`
     card.append(createCardBack())
     card.append(createCardFront(obj.image_url))
-    card.addEventListener('click', (event) => {
-        executeCardFlip(event)
-    })
+    card.addEventListener('click', executeCardFlip)
     return card
 }
 
