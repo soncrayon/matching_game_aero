@@ -4,28 +4,133 @@ let successfulMoves = 0
 let timerActive = false
 let flippedCardClass = null 
 
-// const exitModalWithoutRefreshingGame = () => {
+const exitModalWithoutResettingGame = () => {
+    document.querySelector('.game_won_modal').remove()
+    document.querySelector('.game_won_modal_background').remove()
+    alert('Click the refresh icon in the upper right if you want to play again or simply refresh the web page.')
+}
 
-// }
+const resetGame = () => {
+  location.reload(); 
+}
 
-// const refreshGame = () => {
-//     // need to append an event listener for this function to the refresh icon in the upper right of game board 
-// }
+const playAgainBtn = () => {
+    const btnDiv = document.createElement('div')
+    btnDiv.style.display = "flex"
+    btnDiv.style.justifyContent = "center"
+    const btn = document.createElement('button')
+    btn.innerHTML = "Play Again"
+    btn.style.width = "10rem"
+    btn.style.height = "5rem"
+    btn.addEventListener('click', resetGame)
+    btnDiv.append(btn)
+    return btnDiv
+}
 
-// const showGameWonModal = () => {
-//     // create appropriate dom elements and set styling in css file 
-//     // create buttons for continue/quit actions and apply event handlers 
-//     // conditionals here for whether the player chooses to refresh the game or exit the modal without refreshing either by clicking the "no" button or "x" to close
-//     // pull the "x" from icon8 
-// }
+const gameWonModalText = () => {
+    const txt = document.createElement('div')
+    txt.style.height = "80%"
+    txt.style.width = "100%"
+    txt.style.display = "flex"
+    txt.style.flexDirection = "column"
+    txt.style.justifyContent = "center"
+    textline1 = document.createElement('div')
+    textline1.style.textAlign = "center"
+    textline1.innerHTML = `You've won the game!`
+    textline2 = document.createElement('div')
+    textline2.style.textAlign = "center"
+    textline2.innerHTML = `Here are your stats:`
+    textline3 = document.createElement('div')
+    textline3.style.textAlign = "center"
+    textline3.innerHTML = `Moves: ${document.getElementById('moves_number').innerHTML}`
+    textline4 = document.createElement('div')
+    textline4.style.textAlign = "center"
+    textline4.innerHTML = `Time: ${document.getElementById('timer_clock_minutes').innerHTML}:${document.getElementById('timer_clock_seconds').innerHTML}`
+    textline5 = document.createElement('div')
+    textline5.style.textAlign = "center"
+    textline5.innerHTML = `Rating: ${document.getElementsByClassName('rating_star').length}`
+    txt.append(textline1)
+    txt.append(textline2)
+    txt.append(textline3)
+    txt.append(textline4)
+    txt.append(textline5)
+    return txt
+}
+
+const gameCloseIcon = () => {
+    const iconDiv = document.createElement('div')
+    iconDiv.style.alignContent = "left"
+    iconDiv.style.height = "5%"
+    iconDiv.style.width = "100%"
+    const iconImage = document.createElement('img')
+    iconImage.alt = "close_modal"
+    iconImage.src = "https://img.icons8.com/material-rounded/16/000000/delete-sign.png"
+    iconImage.addEventListener('click', exitModalWithoutResettingGame)
+    iconDiv.append(iconImage)
+    return iconDiv
+}
+
+const gameWonModal = () => {
+    const modal = document.createElement('div')
+    const styles = {
+        "width":"50vw",
+        "height":"50vh",
+        "backgroundColor":"white",
+        "opacity":"1",
+        "borderStyle":"solid",
+        "zIndex":"2",
+        "padding":"2%",
+        "display":"flex",
+        "flexDirection":"column",
+        "justifyContent":"center",
+        "position":"absolute",
+        "marginTop":"10%",
+        "borderRadius":"2rem"
+    }
+    modal.className = "game_won_modal"
+    Object.assign(modal.style, styles)
+    modal.append(gameCloseIcon())
+    modal.append(gameWonModalText())
+    modal.append(playAgainBtn())
+    return modal
+}
+
+const gameWonBackground = () => {
+    const background = document.createElement('div')
+    const styles = {
+        "width":"100vw",
+        "height":"100vh",
+        "backgroundColor":"black",
+        "opacity":"0.6",
+        "position":"fixed"
+    }
+    background.className = 'game_won_modal_background'
+    Object.assign(background.style, styles)
+    return background
+}
+
+const showGameWonModal = () => {
+    document.querySelector('body').append(gameWonBackground())
+    document.querySelector('body').append(gameWonModal())
+}
 
 const checkForGameWin = () => {
-    if (successfulMoves === 8) {
-        // won game logic goes here
-        console.log('you won the game')
-        timerActive === false 
-        // showGameWonModal()
-    }
+    setTimeout(function(){
+        if (successfulMoves === 8) {
+            timerActive = false 
+            document.querySelectorAll('.card').forEach((card) => {
+                card.parentNode.classList.toggle('animate__animated')
+                card.parentNode.classList.toggle('animate__rubberBand')
+            })
+            setTimeout(function(){
+                document.querySelectorAll('.card').forEach((card) => {
+                    card.parentNode.classList.toggle('animate__animated')
+                    card.parentNode.classList.toggle('animate__rubberBand')
+                })
+                showGameWonModal()
+            }, 500)
+        }
+    }, 500)
 }
 
 const resetCardsAfterMismatch = () => {
@@ -35,6 +140,7 @@ const resetCardsAfterMismatch = () => {
             card.parentNode.classList.toggle('animate__shakeX')
             card.classList.toggle('active')
             card.style.transform = 'none'
+            card.addEventListener('click', executeCardFlip)
         })
         flippedCardClass = null 
     }, 1000)
@@ -55,7 +161,6 @@ const handleMatch = () => {
         card.parentNode.classList.toggle('animate__animated')
         card.parentNode.classList.toggle('animate__rubberBand')
         card.classList.toggle('active')
-        card.removeEventListener('click', executeCardFlip)
     })
     flippedCardClass = null 
     successfulMoves++ 
@@ -161,6 +266,7 @@ const createCardFront = (image) => {
 const flipCard = (event) => {
     event.target.parentNode.parentNode.style.transform = "rotateY(180deg)"
     event.target.parentNode.parentNode.classList.toggle("active")
+    event.target.parentNode.parentNode.removeEventListener('click', executeCardFlip)
 }
 
 const executeCardFlip = (event) => {
@@ -181,7 +287,9 @@ const createCard = (obj) => {
 }
 
 const getCardImageObjects = () => {
-    let cardObjects = [
+    let cardObjects = []
+    for (let i = 0; i < 2; i++) {
+        [
             {id: 1, image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Japanese_Hiragana_kyokashotai_NE.svg/240px-Japanese_Hiragana_kyokashotai_NE.svg.png"},
             {id: 2, image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Japanese_Hiragana_kyokashotai_NU.svg/240px-Japanese_Hiragana_kyokashotai_NU.svg.png"},
             {id: 3, image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Japanese_Hiragana_kyokashotai_NO.svg/240px-Japanese_Hiragana_kyokashotai_NO.svg.png"},
@@ -190,7 +298,12 @@ const getCardImageObjects = () => {
             {id: 6, image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Japanese_Hiragana_kyokashotai_TE.svg/240px-Japanese_Hiragana_kyokashotai_TE.svg.png"},
             {id: 7, image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Japanese_Hiragana_kyokashotai_TI.svg/240px-Japanese_Hiragana_kyokashotai_TI.svg.png"},
             {id: 8, image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Japanese_Hiragana_kyokashotai_MA.svg/240px-Japanese_Hiragana_kyokashotai_MA.svg.png"}
-    ]
+        ].forEach((obj) => {
+            cardObjects.push(obj)
+        })
+    }
+   
+    
     // implement the Fisher-Yates algorithm to randomize the cards on each game load 
     for (let i = cardObjects.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * i)
@@ -204,18 +317,21 @@ const getCardImageObjects = () => {
 const createCardScenes = () => {
     const cardScenes = []
     let cardScene
-    for (let i = 0; i < 2; i++) {
-        getCardImageObjects().forEach((obj) => {
-            cardScene = document.createElement('div')
-            cardScene.className = 'card_scene'
-            cardScene.append(createCard(obj))
-            cardScenes.push(cardScene)
-        }) 
-    }
+    getCardImageObjects().forEach((obj) => {
+        cardScene = document.createElement('div')
+        cardScene.className = 'card_scene'
+        cardScene.append(createCard(obj))
+        cardScenes.push(cardScene)
+    }) 
     return cardScenes
 }
 
+const addRefreshListener = () => {
+    document.getElementById("refresh").addEventListener('click', resetGame)
+}
+
 const loadGame = (cardScenes) => {
+    addRefreshListener()
     cardScenes.forEach((cardScene) => {
         document.getElementById('game_board').append(cardScene)   
     })
