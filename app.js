@@ -2,14 +2,14 @@
 const express = require("express")
 const app = express()
 const path = require('path')
-const public = path.join(__dirname, 'public');
+const public = path.join(__dirname + 'public');
 
 // use the express-static middleware
 app.use(express.static("public"))
 
 // define the first route
 app.get("/", function (req, res) {
-    res.sendFile(public, 'matching_game_aero.html');
+    res.sendFile(path.join (public + 'matching_game_aero.html'));
 })
 
 // start the server listening for requests
