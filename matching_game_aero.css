@@ -1,0 +1,161 @@
+* {
+    box-sizing: border-box;
+    font-family: 'Lato', sans-serif;
+    /* border-style: solid; */
+}
+
+html {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0; 
+    padding-right: 15%; 
+    padding-left: 15%;
+    padding-top: 0;
+    padding-bottom: 1%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+header {
+    width: 100%;
+    height: 10%;
+    text-align: center;
+}
+
+header h2 {
+    margin-block-start: 0;
+    margin-block-end: 0;
+}
+
+#stats {
+    width: 80%;
+    height: 5%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.stat {
+    display: flex;
+    flex-direction: row;
+}
+
+.stat p {
+    margin-block-start: 0;
+    margin-block-end: 0;
+}
+
+.number_stat {
+    margin-left: 2%;
+}
+
+#timer {
+    width: 18%;
+}
+
+#timer_clock {
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+}
+
+#rating {
+    width: 23%;
+    justify-content: left;
+}
+
+#rating_text {
+    margin-right: 2%;
+}
+
+.rating_star {
+    margin-right: 2%;
+}
+
+#refresh img {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+#refresh img:hover {
+    cursor: pointer;
+}
+
+#game_board {
+    width: 80%;
+    height: 90%;
+    padding: 2%;
+    padding-top: 3%;
+    padding-left: 4%;
+    display: grid;
+    justify-content: space-around;
+    column-gap: 2rem;
+    grid-template-columns: auto auto auto auto;
+    grid-template-rows: auto auto auto auto;
+    background-color: lightblue;
+    border-radius: 5%;
+}
+
+.card_scene {
+    width: 10rem;
+    height: 10rem;
+    perspective: 600px; 
+}
+
+.card {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transition: transform 0.5s;
+    transform-style: preserve-3d;
+}
+
+.card:hover {
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.card_face {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    backface-visibility: hidden;
+}
+
+.card_face_front {
+    transform: rotateY( 180deg );
+    background-color: white;
+    border-radius: 1rem;
+
+}
+  
+.card_face_back {
+    border-radius: 1rem;
+}
+
+.card_face_back img {
+    width: 100%;
+    height: 100%;
+    border-radius: 1rem;
+}
+
+.card_face_front img {
+    width: 100%;
+    height: 100%;
+}
+
+.card.is_flipped {
+    transform: rotateY(180deg);
+}
+
+
+
+
+
