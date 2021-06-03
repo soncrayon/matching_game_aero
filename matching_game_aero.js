@@ -237,7 +237,7 @@ const startTimer = (event) => {
 
 const createCardBackImage = () => {
     let cardBackImage = document.createElement('img')
-    cardBackImage.src = 'https://background-tiles.com/overview/black/patterns/large/1035.png'
+    cardBackImage.src = 'card_design1 copy.jpg'
     cardBackImage.alt = 'card back image'
     return cardBackImage
 }
